@@ -1,5 +1,4 @@
 import request from 'supertest';
-
 const serverURL = 'http://47.128.221.203:5000';
 
 describe('Users', () => {
@@ -483,23 +482,22 @@ describe('Users', () => {
         });
     });
 
-    // describe('Get room type', () => {
-    //     it('gets all room type with valid pagination', async () => {
-    //         try {
-    //             const response = await request(app)
-    //                 .get('/admin/room/getroomtype')
-    //                 .set('Authorization', `Bearer ${authToken}`)
-    //                 .expect(200);
+    describe('Get room type', () => {
+        it('gets all room type with valid pagination', async () => {
+            try {
+                const response = await request(serverURL)
+                    .get('/admin/room/getroomtype/{roomtype_id}')
+                    .set('Authorization', `Bearer ${authToken}`)
+                    .expect(200);
     
-    //             expect(response.body).toBeDefined();
-    //             // Add further assertions based on the response data
-    //         } catch (error) {
-    //             console.error('Error while getting all room type:', error);
-    //             throw new Error('Failed to get all room type');
-    //         }
-    //     });
-    // });
-    
+                expect(response.body).toBeDefined();
+                // Add further assertions based on the response data
+            } catch (error) {
+                console.error('Error while getting all room type:', error);
+                throw new Error('Failed to get all room type');
+            }
+        });
+    });
 
     describe('Get teacherid', () => {
         it('gets all teacherid with valid pagination', async () => {
@@ -1106,5 +1104,47 @@ describe('Users', () => {
         });
     });
     
+    describe('Get Logs', () => {
+        it('gets logs successfully with valid authentication', async () => {
+            try {
+                const response = await request(serverURL)
+                    .get('/logs')
+                    .set('Authorization', `Bearer ${authToken}`)
+                    .query({
+                        startDate: '2024-01-01',
+                        endDate: '2024-01-31',
+                        action_type_name: 'login',
+                        action_status: 'success'
+                    })
+                    .expect(200);
+    
+                expect(response.body).toBeDefined();
+                // Add further assertions based on the response data
+            } catch (error) {
+                console.error('Error while getting logs:', error);
+                throw new Error('Failed to get logs');
+            }
+        });
+    
+        it('returns 401 if not authenticated', async () => {
+            try {
+                const response = await request(serverURL)
+                    .get('/logs')
+                    .query({
+                        startDate: '2024-01-01',
+                        endDate: '2024-01-31',
+                        action_type_name: 'login',
+                        action_status: 'success'
+                    })
+                    .expect(401);
+    
+                expect(response.body).toBeDefined();
+                // Add further assertions based on the response data
+            } catch (error) {
+                console.error('Error while getting logs:', error);
+                throw new Error('Failed to get logs');
+            }
+        });
+    });
     
 });
